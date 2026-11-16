@@ -7,7 +7,7 @@
 
 **Three browser-only labs where you trigger a real web vulnerability, then flip to the fixed code and watch the exact same payload fail.**
 
-**Live site:** https://mutasimalatawneh.github.io/FinalProject/
+**Live site:** https://mutasimalatawneh.github.io/Rubble/
 
 ---
 
