@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghurir — Interactive Web Security Sandbox</title>
+  <meta name="description" content="Three hands-on, browser-only labs that show how real web vulnerabilities work — and how to fix them.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">G/</span> Ghurir</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="lab-prototype-pollution.html">Prototype Pollution</a></li>
+          <li><a href="lab-timing-attack.html">Timing Attack</a></li>
+          <li><a href="lab-redos.html">ReDoS</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero">
+      <p class="eyebrow">Interactive Web Security Sandbox</p>
+      <h1>Break it. See why. Fix it.</h1>
+      <p class="lede">
+        Ghurir is three small labs that each show one real web vulnerability.
+        You press a button, watch the bug happen, then flip to the fixed code
+        and watch the exact same attack fail.
+      </p>
+    </section>
+
+    <div class="callout callout--info" role="note">
+      <span aria-hidden="true">🛡️</span>
+      <p style="margin:0"><strong>Everything here is a simulation.</strong> All code runs only inside
+      your own browser tab. Nothing is sent to a server, nothing is stored, and no real
+      passwords or personal data are involved.</p>
+    </div>
+
+    <h2>The labs</h2>
+    <div class="card-grid">
+      <a class="lab-card" href="lab-prototype-pollution.html">
+        <span class="badge badge--owasp">OWASP 2021 · A08 · CWE-1321</span>
+        <h3>Prototype Pollution</h3>
+        <p>One sneaky JSON key turns every object in the app into an admin.</p>
+        <span class="go">Open lab →</span>
+      </a>
+      <a class="lab-card" href="lab-timing-attack.html">
+        <span class="badge badge--owasp">OWASP 2021 · A02 · CWE-208</span>
+        <h3>Timing Attack</h3>
+        <p>Guess a secret one letter at a time — just by timing how long “wrong” takes.</p>
+        <span class="go">Open lab →</span>
+      </a>
+      <a class="lab-card" href="lab-redos.html">
+        <span class="badge badge--owasp">OWASP 2021 · A04 · CWE-1333</span>
+        <h3>ReDoS</h3>
+        <p>A tiny string makes an innocent-looking regex freeze the whole page.</p>
+        <span class="go">Open lab →</span>
+      </a>
+    </div>
+
+    <h2>How every lab works</h2>
+    <ol class="steps-list">
+      <li><span><strong>What it is</strong> — the idea in three sentences.</span></li>
+      <li><span><strong>The line</strong> — real code with the one buggy line highlighted.</span></li>
+      <li><span><strong>Try it</strong> — press a payload button and watch the attack live.</span></li>
+      <li><span><strong>Why it matters</strong> — what damage it does in the real world.</span></li>
+      <li><span><strong>The fix</strong> — flip Vulnerable ↔ Fixed and rerun the <em>same</em> payload.</span></li>
+      <li><span><strong>Sources</strong> — where to read more.</span></li>
+    </ol>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Ghurir · Final project, 42 Amman/Irbid · All demos are client-side simulations.</p>
+    </div>
+  </footer>
+</body>
+</html>
