@@ -98,7 +98,7 @@ function makeLogin(mode) {
    Page wiring
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  Ghurir.renderAll({ tick, checkSecret, safeCheckSecret, timingAttack });
+  Rubble.renderAll({ tick, checkSecret, safeCheckSecret, timingAttack });
 
   const $ = id => document.getElementById(id);
   let busy = false;
@@ -175,14 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
   async function runAttack(prefix, payload, mode) {
     const logEl = $(`ta-${prefix}-log`);
     resetPanel(prefix);
-    Ghurir.log(logEl, `▶ [${mode.toUpperCase()}] ${payload.label}`, 'muted');
+    Rubble.log(logEl, `▶ [${mode.toUpperCase()}] ${payload.label}`, 'muted');
 
     const known = await timingAttack(makeLogin(mode), payload.positions, step => {
       drawProgress(prefix, step);
       if (step.done) {
         const others = step.results.filter(r => r !== step.best);
         const avg = others.reduce((sum, r) => sum + r.ms, 0) / others.length;
-        Ghurir.log(logEl, `  letter #${step.pos + 1}: slowest “${step.best.char}” ` +
+        Rubble.log(logEl, `  letter #${step.pos + 1}: slowest “${step.best.char}” ` +
           `${step.best.ms.toFixed(1)} ms vs ~${avg.toFixed(1)} ms for the rest` +
           (step.best.accepted ? '  (login returned true)' : ''));
       }
@@ -195,13 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
     status.className = 'status ' + (success ? 'status--danger' : 'status--safe');
     if (payload.positions === SECRET_LENGTH) {
       const loggedIn = makeLogin(mode)(known);
-      Ghurir.log(logEl, `  login("${known}") → ${loggedIn}   ` +
+      Rubble.log(logEl, `  login("${known}") → ${loggedIn}   ` +
         (loggedIn ? '⚠ SECRET RECOVERED' : '✓ attack failed'), loggedIn ? 'danger' : 'safe');
       status.innerHTML = loggedIn
         ? `<span aria-hidden="true">🔓</span><span><strong>Secret recovered:</strong> <code>${known}</code>. The attacker can log in.</span>`
         : `<span aria-hidden="true">🔒</span><span><strong>Attack failed.</strong> Best guess <code>${known}</code> is wrong (${correct}/${SECRET_LENGTH} letters right${correct ? ', by luck' : ''}). Every guess took the same time.</span>`;
     } else {
-      Ghurir.log(logEl, `  first letter guessed: “${known}” → ` +
+      Rubble.log(logEl, `  first letter guessed: “${known}” → ` +
         (success ? '⚠ correct' : '✓ wrong'), success ? 'danger' : 'safe');
       status.innerHTML = success
         ? `<span aria-hidden="true">🔓</span><span><strong>First letter leaked:</strong> <code>${known}</code>. One tall bar gave it away.</span>`
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---- Section 5: The fix ---- */
   let lastPayload = PAYLOADS[1];
-  const toggle = Ghurir.initToggle($('ta-toggle'), () =>
+  const toggle = Rubble.initToggle($('ta-toggle'), () =>
     exclusive(() => runAttack('fix', lastPayload, toggle.mode)));   // same payload, new mode
   makePayloadButtons($('ta-fix-payloads'), p => {
     lastPayload = p;
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ['try', 'fix'].forEach(p => {
     resetPanel(p);
-    $(`ta-${p}-clear`).addEventListener('click', () => Ghurir.clear($(`ta-${p}-log`)));
+    $(`ta-${p}-clear`).addEventListener('click', () => Rubble.clear($(`ta-${p}-log`)));
   });
   showSecret();
 });

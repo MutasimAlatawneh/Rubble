@@ -2,7 +2,7 @@
    Lab 1 — Prototype Pollution (OWASP Top 10:2021 A08, CWE-1321)
    --------------------------------------------------------------------------
    The two merge functions below are the REAL code this page runs. The code
-   blocks on the page are generated from them (see Ghurir.renderAll), so what
+   blocks on the page are generated from them (see Rubble.renderAll), so what
    you read is exactly what executes.
    ========================================================================== */
 'use strict';
@@ -110,7 +110,7 @@ function runPayload(json, mode) {
    Page wiring
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  Ghurir.renderAll({ merge, safeMerge });
+  Rubble.renderAll({ merge, safeMerge });
 
   const $ = id => document.getElementById(id);
   const tryInput = $('pp-input');
@@ -131,19 +131,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Write a run's details to a console. */
   function report(logEl, json, mode, out) {
-    Ghurir.log(logEl, `▶ [${mode.toUpperCase()}] merge(settings, ${json})`, 'muted');
+    Rubble.log(logEl, `▶ [${mode.toUpperCase()}] merge(settings, ${json})`, 'muted');
     if (out.error) {
-      Ghurir.log(logEl, '  ' + out.error.message, 'warn');
+      Rubble.log(logEl, '  ' + out.error.message, 'warn');
       return;
     }
-    Ghurir.log(logEl, `  settings now: ${out.result.settings}`);
+    Rubble.log(logEl, `  settings now: ${out.result.settings}`);
     if (out.result.guestIsAdmin) {
-      Ghurir.log(logEl, `  const guest = {};  guest.isAdmin → ${out.result.guestValue}   ⚠ POLLUTED`, 'danger');
+      Rubble.log(logEl, `  const guest = {};  guest.isAdmin → ${out.result.guestValue}   ⚠ POLLUTED`, 'danger');
     } else {
-      Ghurir.log(logEl, `  const guest = {};  guest.isAdmin → ${out.result.guestValue}   ✓ clean`, 'safe');
+      Rubble.log(logEl, `  const guest = {};  guest.isAdmin → ${out.result.guestValue}   ✓ clean`, 'safe');
     }
     if (out.polluted.length) {
-      Ghurir.log(logEl, `  Injected into a built-in prototype: ${out.polluted.join(', ')} (auto-cleaned after this run)`, 'warn');
+      Rubble.log(logEl, `  Injected into a built-in prototype: ${out.polluted.join(', ')} (auto-cleaned after this run)`, 'warn');
     }
   }
 
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   makePayloadButtons($('pp-try-payloads'), tryRun);
   $('pp-run').addEventListener('click', () => tryRun(tryInput.value));
-  $('pp-try-clear').addEventListener('click', () => Ghurir.clear(tryLog));
+  $('pp-try-clear').addEventListener('click', () => Rubble.clear(tryLog));
 
   /* ---- Section 5: The fix (toggle between versions) ---- */
   function fixRun(json) {
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showStatus($('pp-fix-status'), out);
   }
   // Flipping the toggle immediately re-runs the SAME payload in the new mode.
-  const toggle = Ghurir.initToggle($('pp-toggle'), () => fixRun(lastPayload));
+  const toggle = Rubble.initToggle($('pp-toggle'), () => fixRun(lastPayload));
   makePayloadButtons($('pp-fix-payloads'), fixRun);
   $('pp-fix-current').textContent = lastPayload;
 
@@ -197,5 +197,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     $('pp-both-payload').textContent = lastPayload;
   });
-  $('pp-fix-clear').addEventListener('click', () => Ghurir.clear(fixLog));
+  $('pp-fix-clear').addEventListener('click', () => Rubble.clear(fixLog));
 });

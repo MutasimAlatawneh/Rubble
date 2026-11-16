@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Ghurir — shared helpers used by every lab page
+   Rubble — shared helpers used by every lab page
    --------------------------------------------------------------------------
-   Everything lives inside one object, `Ghurir`, so lab scripts can call
-   e.g. Ghurir.renderCode(...) without polluting the global scope.
+   Everything lives inside one object, `Rubble`, so lab scripts can call
+   e.g. Rubble.renderCode(...) without polluting the global scope.
    ========================================================================== */
 'use strict';
 
-const Ghurir = (() => {
+const Rubble = (() => {
 
   /* Turn text into HTML-safe text (so "<" shows up as "<", not as a tag). */
   function escapeHtml(text) {
@@ -88,7 +88,7 @@ const Ghurir = (() => {
   }
 
   /* Render every <code data-source="name"> on the page from a map of functions.
-     Example: Ghurir.renderAll({ vulnerable: merge, fixed: safeMerge }) */
+     Example: Rubble.renderAll({ vulnerable: merge, fixed: safeMerge }) */
   function renderAll(map) {
     document.querySelectorAll('code[data-source]').forEach(el => {
       const names = el.dataset.source.split(',').map(s => s.trim());

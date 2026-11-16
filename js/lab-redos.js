@@ -71,7 +71,7 @@ function calibrate() {
 
 /* Payloads — shared by "Try it" and "The fix". Lengths are filled in by calibrate(). */
 const PAYLOADS = [
-  { id: 'normal', label: 'Normal: ghurir42', value: 'ghurir42' },
+  { id: 'normal', label: 'Normal: rubble42', value: 'rubble42' },
   { id: 'medium', label: 'Evil (short stall)', value: null },
   { id: 'large',  label: 'Evil (≤1.5 s freeze)', value: null },
 ];
@@ -98,7 +98,7 @@ function describe(value) {
    Page wiring
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  Ghurir.renderAll({ validateSignup, safeValidateSignup });
+  Rubble.renderAll({ validateSignup, safeValidateSignup });
 
   const $ = id => document.getElementById(id);
   let busy = false;
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : `<span aria-hidden="true">⚡</span><span><strong>Answered in ${formatMs(out.ms)}.</strong> The page never froze.</span>`;
     $(`rd-${prefix}-timer`).textContent = formatMs(out.ms);
 
-    Ghurir.log($(`rd-${prefix}-log`),
+    Rubble.log($(`rd-${prefix}-log`),
       `[${mode.toUpperCase()}] ${describe(value)} → ${ok ? 'valid' : 'rejected'} in ${formatMs(out.ms)}` +
       (slow ? '   ⚠ FROZE THE TAB' : ''), slow ? 'danger' : 'safe');
   }
@@ -138,10 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = $(`rd-${prefix}-status`);
     status.className = 'status status--warn';
     status.innerHTML = `<span aria-hidden="true">⏳</span><span>Testing ${describe(payload.value)} with the <strong>${mode}</strong> regex… watch the clock.</span>`;
-    await Ghurir.nextPaint();
+    await Rubble.nextPaint();
     const out = runPayload(payload.value, mode);
     report(prefix, payload.value, mode, out);
-    await Ghurir.nextPaint();
+    await Rubble.nextPaint();
     return out;
   }
 
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---- Section 5: The fix ---- */
   let lastPayload = PAYLOADS[1];
-  const toggle = Ghurir.initToggle($('rd-toggle'), () =>
+  const toggle = Rubble.initToggle($('rd-toggle'), () =>
     exclusive(() => run('fix', lastPayload, toggle.mode)));      // same payload, new mode
   makePayloadButtons($('rd-fix-payloads'), p => {
     lastPayload = p;
@@ -191,11 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   ['try', 'fix'].forEach(p =>
-    $(`rd-${p}-clear`).addEventListener('click', () => Ghurir.clear($(`rd-${p}-log`))));
+    $(`rd-${p}-clear`).addEventListener('click', () => Rubble.clear($(`rd-${p}-log`))));
 
   /* ---- Calibrate once the page has painted, then label the buttons ---- */
   document.querySelectorAll('#try button, #fix button').forEach(b => (b.disabled = true));
-  Ghurir.nextPaint().then(() => {
+  Rubble.nextPaint().then(() => {
     const sizes = calibrate();
     PAYLOADS[1].value = evilString(sizes.medium);
     PAYLOADS[2].value = evilString(sizes.large);
