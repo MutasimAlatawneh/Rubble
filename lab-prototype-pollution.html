@@ -36,32 +36,108 @@
 
     <section class="lab-section" id="what" aria-labelledby="what-h">
       <h2 id="what-h"><span class="step">1</span> What it is</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>In JavaScript, almost every object inherits from one shared parent called
+      <code>Object.prototype</code>. <strong>Prototype pollution</strong> happens when attacker-controlled
+      input, usually JSON, writes a property onto that shared parent, so every object in the app suddenly
+      “has” it. It belongs to <strong>OWASP Top 10:2021 A08 – Software and Data Integrity Failures</strong>
+      and is tracked as <strong>CWE-1321</strong>.</p>
     </section>
 
     <section class="lab-section" id="line" aria-labelledby="line-h">
       <h2 id="line-h"><span class="step">2</span> The line</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>A “deep merge” helper like this one is in countless apps. It copies a user’s JSON into a settings object:</p>
+      <figure class="code">
+        <figcaption><span>merge() — vulnerable</span><span class="badge badge--danger">BUG</span></figcaption>
+        <pre><code data-source="merge"></code></pre>
+      </figure>
+      <p class="why-line"><span aria-hidden="true">👉</span><span>When the JSON key is <code>__proto__</code>,
+      <code>target[key]</code> is not a normal property: it <em>is</em> <code>Object.prototype</code>,
+      so the recursive call writes the attacker’s values into the parent of every object.</span></p>
     </section>
 
     <section class="lab-section" id="try" aria-labelledby="try-h">
       <h2 id="try-h"><span class="step">3</span> Try it</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>This mini-app runs <code>merge(settings, yourJson)</code>, then creates a <strong>brand-new,
+      unrelated</strong> object <code>guest = {}</code> and checks <code>guest.isAdmin</code>.
+      Press a payload, or edit the JSON yourself.</p>
+      <div class="btn-row" id="pp-try-payloads" aria-label="Payloads"></div>
+      <div class="field">
+        <label for="pp-input">JSON sent by the “user”</label>
+        <textarea id="pp-input" class="input" spellcheck="false">{"__proto__":{"isAdmin":true}}</textarea>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" id="pp-run">Run merge()</button>
+        <button type="button" class="btn" id="pp-try-clear">Clear output</button>
+      </div>
+      <div class="status" id="pp-try-status" role="status">
+        <span aria-hidden="true">🔒</span><span>Admin panel locked. Nothing has run yet.</span>
+      </div>
+      <div class="console" id="pp-try-log" role="log" aria-live="polite"></div>
+      <p class="callout" role="note"><span aria-hidden="true">🧹</span><span>Notice that <code>settings</code>
+      itself looks untouched, yet a fresh <code>{}</code> is now an admin. After each run the page restores
+      <code>Object.prototype</code>, so the pollution never leaks into the next run.</span></p>
     </section>
 
     <section class="lab-section" id="impact" aria-labelledby="impact-h">
       <h2 id="impact-h"><span class="step">4</span> Why it matters</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Real code is full of checks like <code>if (user.isAdmin)</code> or options like
+      <code>options.shell</code>. If an attacker can plant those on <code>Object.prototype</code>, they can
+      bypass access checks, change how the app behaves, crash it, or, when a polluted option reaches
+      something that runs commands, execute code on the server.</p>
+      <p><strong>Real incident:</strong> in 2019, a prototype pollution bug in Kibana’s Timelion feature
+      (<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-7609">CVE-2019-7609</a>) let attackers run
+      commands on the server. The same year, <code>lodash</code>, one of npm’s most-downloaded libraries,
+      patched the same kind of flaw in <code>defaultsDeep</code>
+      (<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-10744">CVE-2019-10744</a>).</p>
     </section>
 
     <section class="lab-section" id="fix" aria-labelledby="fix-h">
       <h2 id="fix-h"><span class="step">5</span> The fix</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Skip the three keys that lead into a prototype. Everything else is identical, so normal settings
+      still merge.</p>
+      <figure class="code">
+        <figcaption><span>safeMerge() — fixed</span><span class="badge badge--safe">FIX</span></figcaption>
+        <pre><code data-source="safeMerge"></code></pre>
+      </figure>
+      <p class="why-line is-fix"><span aria-hidden="true">✅</span><span><code>__proto__</code>,
+      <code>constructor</code> and <code>prototype</code> are never followed, so the merge can only ever
+      touch the object you gave it.</span></p>
+      <p>Other solid options: create objects with <code>Object.create(null)</code> (no prototype at all),
+      use a <code>Map</code>, or validate JSON against a strict schema.</p>
+
+      <h3>Same payload, both versions</h3>
+      <p>Pick a payload, then flip the toggle. The page re-runs the <strong>exact same string</strong>
+      through the other function.</p>
+      <div class="mode-toggle" id="pp-toggle" role="group" aria-label="Which merge() to run">
+        <button type="button" data-mode="vulnerable" aria-pressed="true">Vulnerable</button>
+        <button type="button" data-mode="fixed" aria-pressed="false">Fixed</button>
+      </div>
+      <div class="btn-row" id="pp-fix-payloads" aria-label="Payloads"></div>
+      <p class="current-payload">Current payload: <code id="pp-fix-current"></code></p>
+      <div class="status" id="pp-fix-status" role="status">
+        <span aria-hidden="true">🔒</span><span>Pick a payload to run.</span>
+      </div>
+      <div class="console" id="pp-fix-log" role="log" aria-live="polite"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" id="pp-both">Run current payload on both</button>
+        <button type="button" class="btn" id="pp-fix-clear">Clear output</button>
+      </div>
+      <p class="compare-caption">Payload: <code id="pp-both-payload">(not run yet)</code></p>
+      <div class="compare" aria-live="polite">
+        <div class="result-card is-vuln"><h3>Vulnerable merge()</h3><div class="result-body" id="pp-both-vuln">—</div></div>
+        <div class="result-card is-fixed"><h3>Fixed safeMerge()</h3><div class="result-body" id="pp-both-fixed">—</div></div>
+      </div>
     </section>
 
     <section class="lab-section" id="sources" aria-labelledby="sources-h">
       <h2 id="sources-h"><span class="step">6</span> Sources</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <ul class="sources">
+        <li><a href="https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/">OWASP Top 10:2021 – A08 Software and Data Integrity Failures</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/1321.html">CWE-1321: Prototype Pollution</a></li>
+        <li><a href="https://portswigger.net/web-security/prototype-pollution">PortSwigger Web Security Academy – Prototype pollution</a></li>
+        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-7609">NVD – CVE-2019-7609 (Kibana)</a></li>
+        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-10744">NVD – CVE-2019-10744 (lodash)</a></li>
+      </ul>
     </section>
   </main>
 
