@@ -70,8 +70,8 @@
       <h2 id="try-h"><span class="step">3</span> Try it</h2>
       <p>The attacker’s script can only call <code>login(guess)</code> and use a stopwatch. For each
       position it tries a–z, and the <strong>slowest</strong> letter is the one that matched.</p>
-      <p class="callout" role="note"><span class="badge badge--warn">AMPLIFIED ×1,000,000</span><span>A real
-      character comparison takes about a nanosecond. Here each one costs <strong>2&nbsp;ms</strong>, so your
+      <p class="callout" role="note"><span class="badge badge--warn">AMPLIFIED ×<span class="js-amp-factor">2,000,000</span></span><span>A real
+      character comparison takes about 1&nbsp;nanosecond. Here each one costs <strong><span class="js-tick-ms">2</span>&nbsp;ms</strong>, so your
       browser’s deliberately blurry clock can see it. Real attackers get the same effect by repeating each
       guess thousands of times and averaging.</span></p>
       <div class="btn-row" id="ta-try-payloads" aria-label="Payloads"></div>

@@ -8,12 +8,17 @@
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 const SECRET_LENGTH = 5;
-const TICK_MS = 2;   // AMPLIFIED cost of comparing ONE character (real CPUs: ~1 ns)
-const SAMPLES = 3;   // the attacker times each guess 3 times and keeps the median
+const TICK_MS = 2;          // AMPLIFIED cost of comparing ONE character
+const REAL_COMPARE_MS = 1e-6; // what it really costs on a modern CPU: ~1 ns
+const SAMPLES = 3;          // the attacker times each guess 3 times and keeps the median
+
+/* The amplification factor printed on the page is COMPUTED from the two
+   constants above (TICK_MS ÷ REAL_COMPARE_MS), so the label always matches. */
+const AMPLIFICATION = Math.round(TICK_MS / REAL_COMPARE_MS);
 
 /* Simulated work: a busy-wait. Comparing one character really takes about a
-   nanosecond — far too fast for a browser clock to see — so we make it 2 ms
-   (roughly a million times slower). This is the ONLY exaggeration in the lab. */
+   nanosecond, far too fast for a browser clock to see, so each comparison
+   costs TICK_MS instead. This is the ONLY exaggeration in the lab. */
 function tick() {
   const end = performance.now() + TICK_MS;
   while (performance.now() < end) { /* busy-wait = simulated work */ }
@@ -99,6 +104,10 @@ function makeLogin(mode) {
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
   Rubble.renderAll({ tick, checkSecret, safeCheckSecret, timingAttack });
+
+  // Print the real numbers from the constants, so the label can't drift from the code.
+  document.querySelectorAll('.js-tick-ms').forEach(el => (el.textContent = String(TICK_MS)));
+  document.querySelectorAll('.js-amp-factor').forEach(el => (el.textContent = AMPLIFICATION.toLocaleString('en-US')));
 
   const $ = id => document.getElementById(id);
   let busy = false;
