@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const status = $(`rd-${prefix}-status`);
     status.className = 'status ' + (slow ? 'status--danger' : 'status--safe');
     status.innerHTML = slow
-      ? `<span aria-hidden="true">🥶</span><span><strong>Tab frozen for ${formatMs(out.ms)}.</strong> The clock above stopped while the regex backtracked.</span>`
-      : `<span aria-hidden="true">⚡</span><span><strong>Answered in ${formatMs(out.ms)}.</strong> The page never froze.</span>`;
+      ? `<span aria-hidden="true">🥶</span> <span><strong>Tab frozen for ${formatMs(out.ms)}.</strong> The clock above stopped while the regex backtracked.</span>`
+      : `<span aria-hidden="true">⚡</span> <span><strong>Answered in ${formatMs(out.ms)}.</strong> The page never froze.</span>`;
     $(`rd-${prefix}-timer`).textContent = formatMs(out.ms);
 
     Rubble.log($(`rd-${prefix}-log`),
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $(`rd-${prefix}-timer`).textContent = 'running…';
     const status = $(`rd-${prefix}-status`);
     status.className = 'status status--warn';
-    status.innerHTML = `<span aria-hidden="true">⏳</span><span>Testing ${describe(payload.value)} with the <strong>${mode}</strong> regex… watch the clock.</span>`;
+    status.innerHTML = `<span aria-hidden="true">⏳</span> <span>Testing ${describe(payload.value)} with the <strong>${mode}</strong> regex… watch the clock.</span>`;
     await Rubble.nextPaint();
     const out = runPayload(payload.value, mode);
     report(prefix, payload.value, mode, out);

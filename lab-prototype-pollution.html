@@ -15,7 +15,7 @@
 
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="index.html" aria-label="Rubble home">
+      <a class="brand" href="index.html">
         <svg xmlns="http://www.w3.org/2000/svg" class="brand-logo" aria-hidden="true" focusable="false" viewBox="0 0 100 100">
         <rect x="18" y="52" width="30" height="30" rx="5" fill="currentColor"/>
         <rect x="53" y="52" width="30" height="30" rx="5" fill="currentColor"/>
@@ -59,10 +59,10 @@
       <h2 id="line-h"><span class="step">2</span> The line</h2>
       <p>A “deep merge” helper like this one is in countless apps. It copies a user’s JSON into a settings object:</p>
       <figure class="code">
-        <figcaption><span>merge() — vulnerable</span><span class="badge badge--danger">BUG</span></figcaption>
+        <figcaption><span>merge() — vulnerable</span> <span class="badge badge--danger">BUG</span></figcaption>
         <pre><code data-source="merge"></code></pre>
       </figure>
-      <p class="why-line"><span aria-hidden="true">👉</span><span>When the JSON key is <code>__proto__</code>,
+      <p class="why-line"><span aria-hidden="true">👉</span> <span>When the JSON key is <code>__proto__</code>,
       <code>target[key]</code> is not a normal property: it <em>is</em> <code>Object.prototype</code>,
       so the recursive call writes the attacker’s values into the parent of every object.</span></p>
     </section>
@@ -79,13 +79,13 @@
       </div>
       <div class="btn-row">
         <button type="button" class="btn btn--primary" id="pp-run">Run merge()</button>
-        <button type="button" class="btn" id="pp-try-clear">Clear output</button>
+        <button type="button" class="btn" id="pp-try-clear" aria-label="Clear output — Try it">Clear output</button>
       </div>
       <div class="status" id="pp-try-status" role="status">
-        <span aria-hidden="true">🔒</span><span>Admin panel locked. Nothing has run yet.</span>
+        <span aria-hidden="true">🔒</span> <span>Admin panel locked. Nothing has run yet.</span>
       </div>
       <div class="console" id="pp-try-log" role="log" aria-live="polite"></div>
-      <p class="callout" role="note"><span aria-hidden="true">🧹</span><span>Notice that <code>settings</code>
+      <p class="callout" role="note"><span aria-hidden="true">🧹</span> <span>Notice that <code>settings</code>
       itself looks untouched, yet a fresh <code>{}</code> is now an admin. After each run the page restores
       <code>Object.prototype</code>, so the pollution never leaks into the next run.</span></p>
     </section>
@@ -108,10 +108,10 @@
       <p>Skip the three keys that lead into a prototype. Everything else is identical, so normal settings
       still merge.</p>
       <figure class="code">
-        <figcaption><span>safeMerge() — fixed</span><span class="badge badge--safe">FIX</span></figcaption>
+        <figcaption><span>safeMerge() — fixed</span> <span class="badge badge--safe">FIX</span></figcaption>
         <pre><code data-source="safeMerge"></code></pre>
       </figure>
-      <p class="why-line is-fix"><span aria-hidden="true">✅</span><span><code>__proto__</code>,
+      <p class="why-line is-fix"><span aria-hidden="true">✅</span> <span><code>__proto__</code>,
       <code>constructor</code> and <code>prototype</code> are never followed, so the merge can only ever
       touch the object you gave it.</span></p>
       <p>Other solid options: create objects with <code>Object.create(null)</code> (no prototype at all),
@@ -127,12 +127,12 @@
       <div class="btn-row" id="pp-fix-payloads" aria-label="Payloads"></div>
       <p class="current-payload">Current payload: <code id="pp-fix-current"></code></p>
       <div class="status" id="pp-fix-status" role="status">
-        <span aria-hidden="true">🔒</span><span>Pick a payload to run.</span>
+        <span aria-hidden="true">🔒</span> <span>Pick a payload to run.</span>
       </div>
       <div class="console" id="pp-fix-log" role="log" aria-live="polite"></div>
       <div class="btn-row">
         <button type="button" class="btn btn--primary" id="pp-both">Run current payload on both</button>
-        <button type="button" class="btn" id="pp-fix-clear">Clear output</button>
+        <button type="button" class="btn" id="pp-fix-clear" aria-label="Clear output — The fix">Clear output</button>
       </div>
       <p class="compare-caption">Payload: <code id="pp-both-payload">(not run yet)</code></p>
       <div class="compare" aria-live="polite">

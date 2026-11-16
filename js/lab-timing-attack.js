@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const c of ALPHABET) {
       const bar = document.createElement('div');
       bar.className = 'bar';
-      bar.innerHTML = `<span class="bar-fill"></span><span class="bar-label">${c}</span>`;
+      bar.innerHTML = `<span class="bar-fill"></span> <span class="bar-label">${c}</span>`;
       bars.append(bar);
     }
     $(`ta-${prefix}-caption`).textContent = 'Time per guess will appear here.';
@@ -203,14 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
       Rubble.log(logEl, `  login("${known}") → ${loggedIn}   ` +
         (loggedIn ? '⚠ SECRET RECOVERED' : '✓ attack failed'), loggedIn ? 'danger' : 'safe');
       status.innerHTML = loggedIn
-        ? `<span aria-hidden="true">🔓</span><span><strong>Secret recovered:</strong> <code>${known}</code>. The attacker can log in.</span>`
-        : `<span aria-hidden="true">🔒</span><span><strong>Attack failed.</strong> Best guess <code>${known}</code> is wrong (${correct}/${SECRET_LENGTH} letters right${correct ? ', by luck' : ''}). Every guess took the same time.</span>`;
+        ? `<span aria-hidden="true">🔓</span> <span><strong>Secret recovered:</strong> <code>${known}</code>. The attacker can log in.</span>`
+        : `<span aria-hidden="true">🔒</span> <span><strong>Attack failed.</strong> Best guess <code>${known}</code> is wrong (${correct}/${SECRET_LENGTH} letters right${correct ? ', by luck' : ''}). Every guess took the same time.</span>`;
     } else {
       Rubble.log(logEl, `  first letter guessed: “${known}” → ` +
         (success ? '⚠ correct' : '✓ wrong'), success ? 'danger' : 'safe');
       status.innerHTML = success
-        ? `<span aria-hidden="true">🔓</span><span><strong>First letter leaked:</strong> <code>${known}</code>. One tall bar gave it away.</span>`
-        : `<span aria-hidden="true">🔒</span><span><strong>No leak.</strong> All bars are about equal; the guess “${known}” is wrong.</span>`;
+        ? `<span aria-hidden="true">🔓</span> <span><strong>First letter leaked:</strong> <code>${known}</code>. One tall bar gave it away.</span>`
+        : `<span aria-hidden="true">🔒</span> <span><strong>No leak.</strong> All bars are about equal; the guess “${known}” is wrong.</span>`;
     }
     return { known, success };
   }

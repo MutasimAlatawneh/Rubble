@@ -15,7 +15,7 @@
 
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="index.html" aria-label="Rubble home">
+      <a class="brand" href="index.html">
         <svg xmlns="http://www.w3.org/2000/svg" class="brand-logo" aria-hidden="true" focusable="false" viewBox="0 0 100 100">
         <rect x="18" y="52" width="30" height="30" rx="5" fill="currentColor"/>
         <rect x="53" y="52" width="30" height="30" rx="5" fill="currentColor"/>
@@ -59,10 +59,10 @@
       <h2 id="line-h"><span class="step">2</span> The line</h2>
       <p>This looks like a perfectly normal way to check a secret code:</p>
       <figure class="code">
-        <figcaption><span>checkSecret() — vulnerable</span><span class="badge badge--danger">BUG</span></figcaption>
+        <figcaption><span>checkSecret() — vulnerable</span> <span class="badge badge--danger">BUG</span></figcaption>
         <pre><code data-source="checkSecret"></code></pre>
       </figure>
-      <p class="why-line"><span aria-hidden="true">👉</span><span>It returns as soon as one character
+      <p class="why-line"><span aria-hidden="true">👉</span> <span>It returns as soon as one character
       differs, so the time it takes tells the attacker how many leading characters were right.</span></p>
     </section>
 
@@ -70,7 +70,7 @@
       <h2 id="try-h"><span class="step">3</span> Try it</h2>
       <p>The attacker’s script can only call <code>login(guess)</code> and use a stopwatch. For each
       position it tries a–z, and the <strong>slowest</strong> letter is the one that matched.</p>
-      <p class="callout" role="note"><span class="badge badge--warn">AMPLIFIED ×<span class="js-amp-factor">2,000,000</span></span><span>A real
+      <p class="callout" role="note"><span class="badge badge--warn">AMPLIFIED ×<span class="js-amp-factor">2,000,000</span></span> <span>A real
       character comparison takes about 1&nbsp;nanosecond. Here each one costs <strong><span class="js-tick-ms">2</span>&nbsp;ms</strong>, so your
       browser’s deliberately blurry clock can see it. Real attackers get the same effect by repeating each
       guess thousands of times and averaging.</span></p>
@@ -86,14 +86,14 @@
       <div class="bars" id="ta-try-bars" aria-hidden="true"></div>
       <p class="bars-caption" id="ta-try-caption"></p>
       <div class="status" id="ta-try-status" role="status">
-        <span aria-hidden="true">⏱️</span><span>Pick a payload to start the attack.</span>
+        <span aria-hidden="true">⏱️</span> <span>Pick a payload to start the attack.</span>
       </div>
       <div class="console" id="ta-try-log" role="log" aria-live="polite"></div>
-      <div class="btn-row"><button type="button" class="btn" id="ta-try-clear">Clear output</button></div>
+      <div class="btn-row"><button type="button" class="btn" id="ta-try-clear" aria-label="Clear output — Try it">Clear output</button></div>
       <details class="more">
         <summary>Show the attacker’s script (the real code running above)</summary>
         <figure class="code">
-          <figcaption><span>timingAttack() + tick()</span><span class="badge badge--warn">AMPLIFIED</span></figcaption>
+          <figcaption><span>timingAttack() + tick()</span> <span class="badge badge--warn">AMPLIFIED</span></figcaption>
           <pre><code data-source="timingAttack, tick"></code></pre>
         </figure>
       </details>
@@ -116,10 +116,10 @@
       (<code>^</code>) and OR (<code>|</code>). The loop always does the same work, so time reveals
       nothing.</p>
       <figure class="code">
-        <figcaption><span>safeCheckSecret() — fixed</span><span class="badge badge--safe">FIX</span></figcaption>
+        <figcaption><span>safeCheckSecret() — fixed</span> <span class="badge badge--safe">FIX</span></figcaption>
         <pre><code data-source="safeCheckSecret"></code></pre>
       </figure>
-      <p class="why-line is-fix"><span aria-hidden="true">✅</span><span>There is no early exit: a right
+      <p class="why-line is-fix"><span aria-hidden="true">✅</span> <span>There is no early exit: a right
       guess and a wrong guess cost exactly the same five comparisons.</span></p>
       <p>In real projects, use a vetted helper such as <code>crypto.timingSafeEqual</code> (Node.js) or
       <code>hmac.compare_digest</code> (Python).</p>
@@ -144,12 +144,12 @@
       <div class="bars" id="ta-fix-bars" aria-hidden="true"></div>
       <p class="bars-caption" id="ta-fix-caption"></p>
       <div class="status" id="ta-fix-status" role="status">
-        <span aria-hidden="true">⏱️</span><span>Pick a payload to start the attack.</span>
+        <span aria-hidden="true">⏱️</span> <span>Pick a payload to start the attack.</span>
       </div>
       <div class="console" id="ta-fix-log" role="log" aria-live="polite"></div>
       <div class="btn-row">
         <button type="button" class="btn btn--primary" id="ta-both">Run current payload on both</button>
-        <button type="button" class="btn" id="ta-fix-clear">Clear output</button>
+        <button type="button" class="btn" id="ta-fix-clear" aria-label="Clear output — The fix">Clear output</button>
       </div>
       <p class="compare-caption">Payload: <code id="ta-both-payload">(not run yet)</code></p>
       <div class="compare" aria-live="polite">
