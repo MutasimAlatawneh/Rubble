@@ -7,7 +7,7 @@
 
 **Three browser-only labs where you trigger a real web vulnerability, then flip to the fixed code and watch the exact same payload fail.**
 
-**Live site:** _LIVE_URL_PLACEHOLDER_
+**Live site:** https://mutasimalatawneh.github.io/FinalProject/
 
 ---
 
@@ -68,7 +68,7 @@ assets/                        Logo, favicons, brand.css (source of the color to
 
 ## Tested on
 
-Chrome 148 and Firefox 159 on Linux, driven by an automated click-through of every page:
+Chrome 148 and Firefox 159 on Linux, driven by an automated click-through of every page, both locally and against the live GitHub Pages site (the deployed files are byte-identical to this repo):
 
 - All three labs, both modes. The same payload succeeds in Vulnerable mode and is blocked in Fixed mode.
 - Timing oracle: 48/48 secrets recovered in Vulnerable mode, alone and under CPU load, and 0 recovered in Fixed mode. This holds in Firefox too, even though Firefox only reports time in 1 ms steps.
