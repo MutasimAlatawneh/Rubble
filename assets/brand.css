@@ -1,0 +1,25 @@
+/* Rubble brand tokens — derived from the Fallen Blocks logo.
+   Map your existing variable names to these. Semantics:
+   brand/accent = brick (links, primary buttons, active nav, logo)
+   vuln  = red   (Vulnerable state + the highlighted BUG line)
+   fixed = green (Fixed state + the highlighted FIX line)
+   warn  = amber (AMPLIFIED / SIMULATION badges) */
+:root{
+  --bg:#f6f4f1; --surface:#ffffff; --text:#17191e; --muted:#6a6f78; --border:#e5e1da;
+  --brand:#d9542b; --brand-strong:#c0471f; --brand-weak:#fbe9e0;
+  --vuln:#c6362a;  --vuln-weak:#f8e0dc;
+  --fixed:#1f9d57; --fixed-weak:#def2e6;
+  --warn:#b5790a;  --warn-weak:#f7ecd4;
+  --code-bg:#1e2026; --code-text:#e8e6e2;
+  --radius:12px; --shadow:0 1px 3px rgba(20,20,20,.08),0 8px 24px rgba(20,20,20,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141519; --surface:#1d1f24; --text:#f1f0ed; --muted:#9aa0a8; --border:#2b2e35;
+    --brand:#ec6d44; --brand-strong:#f0855f; --brand-weak:#2a2016;
+    --vuln:#ef5a4d;  --vuln-weak:#2e1b19;
+    --fixed:#34c07a; --fixed-weak:#15271d;
+    --warn:#e0a830;  --warn-weak:#2a2212;
+    --code-bg:#0f1114; --code-text:#e8e6e2;
+  }
+}
