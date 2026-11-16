@@ -10,7 +10,7 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 const SECRET_LENGTH = 5;
 const TICK_MS = 2;          // AMPLIFIED cost of comparing ONE character
 const REAL_COMPARE_MS = 1e-6; // what it really costs on a modern CPU: ~1 ns
-const SAMPLES = 3;          // the attacker times each guess 3 times and keeps the median
+const SAMPLES = 3;          // the attacker times each guess 3 times and keeps the FASTEST
 
 /* The amplification factor printed on the page is COMPUTED from the two
    constants above (TICK_MS ÷ REAL_COMPARE_MS), so the label always matches. */
@@ -60,7 +60,8 @@ async function timingAttack(login, positions, onUpdate) {
         accepted = login(guess);
         times.push(performance.now() - start);
       }
-      results.push({ char, ms: median(times), accepted });
+      // Keep the fastest timing: interruptions (other tabs, the OS) only ever ADD time.
+      results.push({ char, ms: Math.min(...times), accepted });
       onUpdate({ pos, known, results, done: false });
       await yieldToBrowser(); // let the page repaint the bars
     }
@@ -74,10 +75,6 @@ async function timingAttack(login, positions, onUpdate) {
 }
 
 /* ---------- small helpers ---------- */
-function median(list) {
-  const s = [...list].sort((a, b) => a - b);
-  return s[Math.floor(s.length / 2)];
-}
 function yieldToBrowser() {
   return new Promise(resolve => setTimeout(resolve, 0));
 }
@@ -166,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bars[i].title = `${r.char}: ${r.ms.toFixed(1)} ms`;
     });
     $(`ta-${prefix}-caption`).textContent =
-      `Letter #${pos + 1}: median time per guess (taller = slower). ` +
+      `Letter #${pos + 1}: fastest of ${SAMPLES} timings per guess (taller = slower). ` +
       (best ? `Slowest: “${best.char}” at ${best.ms.toFixed(1)} ms.` : 'Measuring…');
   }
 

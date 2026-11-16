@@ -85,8 +85,10 @@ function runPayload(value, mode) {
   return { ms, errors };
 }
 
+/* Anything under 1 ms is shown as "< 1 ms": Firefox's clock only ticks in
+   1 ms steps, so claiming more precision than that would not be honest. */
 function formatMs(ms) {
-  return ms < 0.1 ? '< 0.1 ms' : ms < 10 ? `${ms.toFixed(2)} ms` : `${Math.round(ms).toLocaleString()} ms`;
+  return ms < 1 ? '< 1 ms' : ms < 10 ? `${ms.toFixed(1)} ms` : `${Math.round(ms).toLocaleString('en-US')} ms`;
 }
 
 function describe(value) {
