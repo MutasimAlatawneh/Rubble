@@ -36,32 +36,124 @@
 
     <section class="lab-section" id="what" aria-labelledby="what-h">
       <h2 id="what-h"><span class="step">1</span> What it is</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>A <strong>timing attack</strong> learns a secret by measuring how long a program takes to answer.
+      If a password check stops at the first wrong character, a guess with more correct letters takes a
+      little longer, so an attacker can rebuild the secret one character at a time. It belongs to
+      <strong>OWASP Top 10:2021 A02 – Cryptographic Failures</strong> and is tracked as
+      <strong>CWE-208</strong> (Observable Timing Discrepancy).</p>
     </section>
 
     <section class="lab-section" id="line" aria-labelledby="line-h">
       <h2 id="line-h"><span class="step">2</span> The line</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>This looks like a perfectly normal way to check a secret code:</p>
+      <figure class="code">
+        <figcaption><span>checkSecret() — vulnerable</span><span class="badge badge--danger">BUG</span></figcaption>
+        <pre><code data-source="checkSecret"></code></pre>
+      </figure>
+      <p class="why-line"><span aria-hidden="true">👉</span><span>It returns as soon as one character
+      differs, so the time it takes tells the attacker how many leading characters were right.</span></p>
     </section>
 
     <section class="lab-section" id="try" aria-labelledby="try-h">
       <h2 id="try-h"><span class="step">3</span> Try it</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>The attacker’s script can only call <code>login(guess)</code> and use a stopwatch. For each
+      position it tries a–z, and the <strong>slowest</strong> letter is the one that matched.</p>
+      <p class="callout" role="note"><span class="badge badge--warn">AMPLIFIED ×1,000,000</span><span>A real
+      character comparison takes about a nanosecond. Here each one costs <strong>2&nbsp;ms</strong>, so your
+      browser’s deliberately blurry clock can see it. Real attackers get the same effect by repeating each
+      guess thousands of times and averaging.</span></p>
+      <div class="btn-row" id="ta-try-payloads" aria-label="Payloads"></div>
+      <div class="secret-box">
+        <span>Server’s secret (5 letters, a–z):</span>
+        <span class="secret-value">•••••</span>
+        <button type="button" class="btn js-reveal" aria-pressed="false">Reveal</button>
+        <button type="button" class="btn js-new-secret">New secret</button>
+      </div>
+      <p class="visually-hidden" id="ta-try-slots-label">Letters recovered by the attacker</p>
+      <div class="slots" id="ta-try-slots" aria-labelledby="ta-try-slots-label"></div>
+      <div class="bars" id="ta-try-bars" aria-hidden="true"></div>
+      <p class="bars-caption" id="ta-try-caption"></p>
+      <div class="status" id="ta-try-status" role="status">
+        <span aria-hidden="true">⏱️</span><span>Pick a payload to start the attack.</span>
+      </div>
+      <div class="console" id="ta-try-log" role="log" aria-live="polite"></div>
+      <div class="btn-row"><button type="button" class="btn" id="ta-try-clear">Clear output</button></div>
+      <details class="more">
+        <summary>Show the attacker’s script (the real code running above)</summary>
+        <figure class="code">
+          <figcaption><span>timingAttack() + tick()</span><span class="badge badge--warn">AMPLIFIED</span></figcaption>
+          <pre><code data-source="timingAttack, tick"></code></pre>
+        </figure>
+      </details>
     </section>
 
     <section class="lab-section" id="impact" aria-labelledby="impact-h">
       <h2 id="impact-h"><span class="step">4</span> Why it matters</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Guessing a 5-letter secret blindly can take up to 26<sup>5</sup> ≈ 11.9 million tries. The timing
+      leak cuts that to at most 26 × 5 = 130. The same trick works against API tokens, password-reset codes
+      and message signatures (HMACs), which turns “impossible to guess” into “a few minutes”.</p>
+      <p><strong>Real incident:</strong> the Xbox&nbsp;360 boot loader (2007) checked signatures with
+      <code>memcmp</code>, which stops at the first wrong byte. Hackers timed it to forge a valid signature
+      byte by byte and boot their own code. In 2009 the same bug was found in Google’s Keyczar crypto
+      library.</p>
     </section>
 
     <section class="lab-section" id="fix" aria-labelledby="fix-h">
       <h2 id="fix-h"><span class="step">5</span> The fix</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Compare <em>every</em> character, no matter what, and collect the differences with XOR
+      (<code>^</code>) and OR (<code>|</code>). The loop always does the same work, so time reveals
+      nothing.</p>
+      <figure class="code">
+        <figcaption><span>safeCheckSecret() — fixed</span><span class="badge badge--safe">FIX</span></figcaption>
+        <pre><code data-source="safeCheckSecret"></code></pre>
+      </figure>
+      <p class="why-line is-fix"><span aria-hidden="true">✅</span><span>There is no early exit: a right
+      guess and a wrong guess cost exactly the same five comparisons.</span></p>
+      <p>In real projects, use a vetted helper such as <code>crypto.timingSafeEqual</code> (Node.js) or
+      <code>hmac.compare_digest</code> (Python).</p>
+
+      <h3>Same attack, both versions</h3>
+      <p>Same secret, same attacker script. Only the checker changes. Flip the toggle to re-run the
+      current payload.</p>
+      <div class="mode-toggle" id="ta-toggle" role="group" aria-label="Which checker the server uses">
+        <button type="button" data-mode="vulnerable" aria-pressed="true">Vulnerable</button>
+        <button type="button" data-mode="fixed" aria-pressed="false">Fixed</button>
+      </div>
+      <div class="btn-row" id="ta-fix-payloads" aria-label="Payloads"></div>
+      <p class="current-payload">Current payload: <code id="ta-fix-current"></code></p>
+      <div class="secret-box">
+        <span>Server’s secret (5 letters, a–z):</span>
+        <span class="secret-value">•••••</span>
+        <button type="button" class="btn js-reveal" aria-pressed="false">Reveal</button>
+        <button type="button" class="btn js-new-secret">New secret</button>
+      </div>
+      <p class="visually-hidden" id="ta-fix-slots-label">Letters recovered by the attacker</p>
+      <div class="slots" id="ta-fix-slots" aria-labelledby="ta-fix-slots-label"></div>
+      <div class="bars" id="ta-fix-bars" aria-hidden="true"></div>
+      <p class="bars-caption" id="ta-fix-caption"></p>
+      <div class="status" id="ta-fix-status" role="status">
+        <span aria-hidden="true">⏱️</span><span>Pick a payload to start the attack.</span>
+      </div>
+      <div class="console" id="ta-fix-log" role="log" aria-live="polite"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" id="ta-both">Run current payload on both</button>
+        <button type="button" class="btn" id="ta-fix-clear">Clear output</button>
+      </div>
+      <p class="compare-caption">Payload: <code id="ta-both-payload">(not run yet)</code></p>
+      <div class="compare" aria-live="polite">
+        <div class="result-card is-vuln"><h3>Vulnerable checkSecret()</h3><div class="result-body" id="ta-both-vuln">—</div></div>
+        <div class="result-card is-fixed"><h3>Fixed safeCheckSecret()</h3><div class="result-body" id="ta-both-fixed">—</div></div>
+      </div>
     </section>
 
     <section class="lab-section" id="sources" aria-labelledby="sources-h">
       <h2 id="sources-h"><span class="step">6</span> Sources</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <ul class="sources">
+        <li><a href="https://owasp.org/Top10/A02_2021-Cryptographic_Failures/">OWASP Top 10:2021 – A02 Cryptographic Failures</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/208.html">CWE-208: Observable Timing Discrepancy</a></li>
+        <li><a href="https://rdist.root.org/2009/05/28/timing-attack-in-google-keyczar-library/">Nate Lawson – Timing attack in Google Keyczar library (2009)</a></li>
+        <li><a href="https://nodejs.org/api/crypto.html#cryptotimingsafeequala-b">Node.js docs – crypto.timingSafeEqual</a></li>
+      </ul>
     </section>
   </main>
 
