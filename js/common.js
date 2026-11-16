@@ -97,5 +97,35 @@ const Rubble = (() => {
     });
   }
 
-  return { escapeHtml, getSource, renderCode, renderAll, initToggle, log, clear, nextPaint };
+  /* Run an async task with every lab button disabled, so runs never overlap.
+     Disabling the button that has keyboard focus would drop focus back to
+     the top of the page, so we put focus back where it was afterwards. */
+  let running = false;
+  async function exclusive(task, selector = '#try button, #fix button') {
+    if (running) return;
+    running = true;
+    const focused = document.activeElement;
+    const controls = document.querySelectorAll(selector);
+    controls.forEach(b => (b.disabled = true));
+    try {
+      await task();
+    } finally {
+      controls.forEach(b => (b.disabled = false));
+      running = false;
+      if (focused && focused !== document.body && document.contains(focused)) focused.focus();
+    }
+  }
+
+  /* Scrollable areas (code blocks, consoles) must be reachable by keyboard,
+     otherwise keyboard users can't scroll to see the highlighted line. */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.code pre, .console').forEach(el => {
+      el.tabIndex = 0;
+      if (!el.hasAttribute('aria-label')) {
+        el.setAttribute('aria-label', el.matches('pre') ? 'Code (scrollable)' : 'Output log');
+      }
+    });
+  });
+
+  return { escapeHtml, getSource, renderCode, renderAll, initToggle, log, clear, nextPaint, exclusive };
 })();

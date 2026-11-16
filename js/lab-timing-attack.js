@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.js-amp-factor').forEach(el => (el.textContent = AMPLIFICATION.toLocaleString('en-US')));
 
   const $ = id => document.getElementById(id);
-  let busy = false;
   let revealed = false;
 
   /* ---- shared secret display ---- */
@@ -220,16 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* Lock every control while an attack runs, so runs never overlap. */
-  async function exclusive(task) {
-    if (busy) return;
-    busy = true;
-    const controls = document.querySelectorAll('#try button, #fix button');
-    controls.forEach(b => (b.disabled = true));
-    try { await task(); } finally {
-      controls.forEach(b => (b.disabled = false));
-      busy = false;
-    }
-  }
+  // Lock the buttons while a run is in progress (shared helper in common.js).
+  const exclusive = task => Rubble.exclusive(task);
 
   function makePayloadButtons(container, onPick) {
     PAYLOADS.forEach(p => {

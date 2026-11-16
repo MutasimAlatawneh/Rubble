@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
   Rubble.renderAll({ validateSignup, safeValidateSignup });
 
   const $ = id => document.getElementById(id);
-  let busy = false;
 
   /* ---- Heartbeat: a clock driven by JavaScript on every frame.
           While the regex runs, JavaScript is blocked, so it visibly STOPS. ---- */
@@ -145,16 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return out;
   }
 
-  async function exclusive(task) {
-    if (busy) return;
-    busy = true;
-    const controls = document.querySelectorAll('#try button, #fix button');
-    controls.forEach(b => (b.disabled = true));
-    try { await task(); } finally {
-      controls.forEach(b => (b.disabled = false));
-      busy = false;
-    }
-  }
+  // Lock the buttons while a run is in progress (shared helper in common.js).
+  const exclusive = task => Rubble.exclusive(task);
 
   function makePayloadButtons(container, onPick) {
     PAYLOADS.forEach(p => {
