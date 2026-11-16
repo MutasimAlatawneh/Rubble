@@ -411,7 +411,10 @@ details.more summary { cursor: pointer; font-weight: 600; font-size: var(--text-
   background: var(--warn-weak); color: var(--text); font-size: var(--text-sm);
 }
 .callout--info { background: var(--brand-weak); }
+.callout { flex-wrap: wrap; }
 .callout .badge { flex: none; align-self: flex-start; white-space: nowrap; }
+/* The text takes the rest of the row, and drops below the badge when the row gets too narrow. */
+.callout > :last-child { flex: 1 1 16rem; margin: 0; }
 
 /* ---------- 12. Home page cards ---------- */
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
@@ -422,6 +425,7 @@ details.more summary { cursor: pointer; font-weight: 600; font-size: var(--text-
   color: inherit; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
 }
 .lab-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--brand); color: inherit; }
+.lab-card .badge { align-self: flex-start; }
 .lab-card h3 { font-size: var(--text-xl); margin: 0; }
 .lab-card p { color: var(--muted); margin: 0; flex: 1; }
 .lab-card .go { font-weight: 600; color: var(--brand-ink); font-size: var(--text-sm); }
@@ -442,7 +446,19 @@ details.more summary { cursor: pointer; font-weight: 600; font-size: var(--text-
 .sources li { margin-bottom: var(--space-1); overflow-wrap: anywhere; }
 
 /* ---------- 15. Small screens & motion ---------- */
+main > h2 { margin-top: var(--space-6); }
+
 @media (max-width: 600px) {
+  /* Let the header scroll away: on phones a two-row sticky header eats the screen. */
+  .site-header { position: static; }
+  /* Wrap long code lines so the highlighted BUG/FIX line is fully visible without
+     sideways scrolling. Continuation lines line up with the code, not the numbers. */
+  .code code { min-width: 0; font-size: 0.8125rem; }
+  .code .line {
+    --gutter: calc(3ch + var(--space-2) + var(--space-3));
+    white-space: pre-wrap; overflow-wrap: anywhere;
+    padding-left: var(--gutter); text-indent: calc(-1 * var(--gutter));
+  }
   .lab-section { padding: var(--space-4); }
   .hero { padding-top: var(--space-6); }
   .site-nav a { padding: var(--space-1) var(--space-2); }
