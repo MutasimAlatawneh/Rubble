@@ -36,32 +36,109 @@
 
     <section class="lab-section" id="what" aria-labelledby="what-h">
       <h2 id="what-h"><span class="step">1</span> What it is</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>JavaScript’s regex engine matches text by trying options and backing up (“backtracking”) when one
+      fails. Some patterns give it an exponential number of options, so a short, crafted string can keep it
+      busy for seconds, and because JavaScript runs on one thread, the whole page or server freezes.
+      This is <strong>ReDoS</strong>, part of <strong>OWASP Top 10:2021 A04 – Insecure Design</strong>,
+      tracked as <strong>CWE-1333</strong>.</p>
     </section>
 
     <section class="lab-section" id="line" aria-labelledby="line-h">
       <h2 id="line-h"><span class="step">2</span> The line</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>An ordinary signup validator:</p>
+      <figure class="code">
+        <figcaption><span>validateSignup() — vulnerable</span><span class="badge badge--danger">BUG</span></figcaption>
+        <pre><code data-source="validateSignup"></code></pre>
+      </figure>
+      <p class="why-line"><span aria-hidden="true">👉</span><span><code>([a-z0-9]+)+</code> means
+      “groups of letters, repeated”. A run of 25 a’s can be split into groups in millions of ways, and when
+      a final <code>!</code> makes the match fail, the engine tries every single split before giving up.</span></p>
     </section>
 
     <section class="lab-section" id="try" aria-labelledby="try-h">
       <h2 id="try-h"><span class="step">3</span> Try it</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>The clock below is redrawn by JavaScript every frame. While the regex runs, JavaScript can do
+      nothing else, so the clock and every button <strong>freeze</strong>.</p>
+      <p class="callout" role="note"><span class="badge badge--warn">SAFETY CAP</span><span>This really
+      freezes your tab, so the page first measures your device’s speed and sizes the strings so the worst
+      freeze lasts about 1.5&nbsp;seconds at most.</span></p>
+      <p class="calibration" id="rd-calibration">Calibrating for this device…</p>
+      <div class="btn-row" id="rd-try-payloads" aria-label="Payloads"></div>
+      <div class="freeze-meter" aria-hidden="true">
+        <span class="label">Page clock (updated by JavaScript)</span>
+        <span class="label" style="text-align:right">Last regex run</span>
+        <span class="heartbeat-clock">0.00 s</span>
+        <span class="regex-timer" id="rd-try-timer">—</span>
+        <div class="heartbeat-track"><span class="heartbeat-dot"></span></div>
+      </div>
+      <div class="status" id="rd-try-status" role="status">
+        <span aria-hidden="true">⏱️</span><span>Pick a payload. Keep an eye on the clock.</span>
+      </div>
+      <div class="console" id="rd-try-log" role="log" aria-live="polite"></div>
+      <div class="btn-row"><button type="button" class="btn" id="rd-try-clear">Clear output</button></div>
     </section>
 
     <section class="lab-section" id="impact" aria-labelledby="impact-h">
       <h2 id="impact-h"><span class="step">4</span> Why it matters</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Every extra character roughly doubles the work. A string only a few characters longer than the
+      ones here would freeze the tab for minutes. On a Node.js server, one such request blocks
+      <em>every</em> user, so a handful of requests can take a service offline without a botnet.</p>
+      <p><strong>Real incident:</strong> on 2 July 2019, one badly written regex in a new Cloudflare firewall
+      rule maxed out CPUs on its machines worldwide and caused a global outage of about 27 minutes. In 2016,
+      Stack Overflow went down for 34 minutes because of a regex that trimmed whitespace.</p>
     </section>
 
     <section class="lab-section" id="fix" aria-labelledby="fix-h">
       <h2 id="fix-h"><span class="step">5</span> The fix</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <p>Remove the nested quantifier. The new pattern accepts <em>exactly</em> the same usernames, but
+      there is only one way to match each character, so time grows in a straight line.</p>
+      <figure class="code">
+        <figcaption><span>safeValidateSignup() — fixed</span><span class="badge badge--safe">FIX</span></figcaption>
+        <pre><code data-source="safeValidateSignup"></code></pre>
+      </figure>
+      <p class="why-line is-fix"><span aria-hidden="true">✅</span><span>One <code>+</code>, no nesting:
+      the engine walks the string once and fails fast at the <code>!</code>.</span></p>
+      <p>Extra layers: cap input length <em>before</em> validating, and for untrusted patterns use a
+      linear-time engine such as RE2.</p>
+
+      <h3>Same payload, both versions</h3>
+      <p>Flip the toggle to re-run the current string against the other regex.</p>
+      <div class="mode-toggle" id="rd-toggle" role="group" aria-label="Which validator to run">
+        <button type="button" data-mode="vulnerable" aria-pressed="true">Vulnerable</button>
+        <button type="button" data-mode="fixed" aria-pressed="false">Fixed</button>
+      </div>
+      <div class="btn-row" id="rd-fix-payloads" aria-label="Payloads"></div>
+      <p class="current-payload">Current payload: <code id="rd-fix-current">…</code></p>
+      <div class="freeze-meter" aria-hidden="true">
+        <span class="label">Page clock (updated by JavaScript)</span>
+        <span class="label" style="text-align:right">Last regex run</span>
+        <span class="heartbeat-clock">0.00 s</span>
+        <span class="regex-timer" id="rd-fix-timer">—</span>
+        <div class="heartbeat-track"><span class="heartbeat-dot"></span></div>
+      </div>
+      <div class="status" id="rd-fix-status" role="status">
+        <span aria-hidden="true">⏱️</span><span>Pick a payload. Keep an eye on the clock.</span>
+      </div>
+      <div class="console" id="rd-fix-log" role="log" aria-live="polite"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" id="rd-both">Run current payload on both</button>
+        <button type="button" class="btn" id="rd-fix-clear">Clear output</button>
+      </div>
+      <p class="compare-caption">Payload: <code id="rd-both-payload">(not run yet)</code></p>
+      <div class="compare" aria-live="polite">
+        <div class="result-card is-vuln"><h3>Vulnerable regex</h3><div class="result-body" id="rd-both-vuln">—</div></div>
+        <div class="result-card is-fixed"><h3>Fixed regex</h3><div class="result-body" id="rd-both-fixed">—</div></div>
+      </div>
     </section>
 
     <section class="lab-section" id="sources" aria-labelledby="sources-h">
       <h2 id="sources-h"><span class="step">6</span> Sources</h2>
-      <p class="placeholder">Coming in Phase 2.</p>
+      <ul class="sources">
+        <li><a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10:2021 – A04 Insecure Design</a></li>
+        <li><a href="https://cwe.mitre.org/data/definitions/1333.html">CWE-1333: Inefficient Regular Expression Complexity</a></li>
+        <li><a href="https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS">OWASP – Regular expression Denial of Service (ReDoS)</a></li>
+        <li><a href="https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/">Cloudflare – Details of the outage on July 2, 2019</a></li>
+      </ul>
     </section>
   </main>
 
