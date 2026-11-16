@@ -95,9 +95,12 @@
       <p>Every extra character roughly doubles the work. A string only a few characters longer than the
       ones here would freeze the tab for minutes. On a Node.js server, one such request blocks
       <em>every</em> user, so a handful of requests can take a service offline without a botnet.</p>
-      <p><strong>Real incident:</strong> on 2 July 2019, one badly written regex in a new Cloudflare firewall
-      rule maxed out CPUs on its machines worldwide and caused a global outage of about 27 minutes. In 2016,
-      Stack Overflow went down for 34 minutes because of a regex that trimmed whitespace.</p>
+      <p><strong>Real incidents:</strong> on 2 July 2019, one badly written regex in a new Cloudflare firewall
+      rule maxed out CPUs on its machines worldwide and caused a
+      <a href="https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/">27-minute global outage</a>.
+      On 20 July 2016, a post containing about 20,000 spaces hit a regex that trimmed trailing whitespace
+      and took Stack Overflow down for
+      <a href="https://stackstatus.tumblr.com/post/147710624694/outage-postmortem-july-20-2016">34 minutes</a>.</p>
     </section>
 
     <section class="lab-section" id="fix" aria-labelledby="fix-h">
@@ -146,10 +149,11 @@
     <section class="lab-section" id="sources" aria-labelledby="sources-h">
       <h2 id="sources-h"><span class="step">6</span> Sources</h2>
       <ul class="sources">
-        <li><a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10:2021 – A04 Insecure Design</a></li>
+        <li><a href="https://top10.owasp.org/A04_2021-Insecure_Design/">OWASP Top 10:2021 – A04 Insecure Design</a></li>
         <li><a href="https://cwe.mitre.org/data/definitions/1333.html">CWE-1333: Inefficient Regular Expression Complexity</a></li>
-        <li><a href="https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS">OWASP – Regular expression Denial of Service (ReDoS)</a></li>
+        <li><a href="https://community.owasp.org/attacks/Regular_expression_Denial_of_Service_-_ReDoS">OWASP – Regular expression Denial of Service (ReDoS)</a></li>
         <li><a href="https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/">Cloudflare – Details of the outage on July 2, 2019</a></li>
+        <li><a href="https://stackstatus.tumblr.com/post/147710624694/outage-postmortem-july-20-2016">Stack Exchange – Outage Postmortem, July 20, 2016</a></li>
       </ul>
     </section>
   </main>
